@@ -1,1011 +1,505 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HALAGEL Helpdesk Ticketing System</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-attachment: fixed;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .floating-shapes {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .shape {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 20s infinite ease-in-out;
-        }
-
-        .shape:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .shape:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            left: 80%;
-            animation-delay: 4s;
-        }
-
-        .shape:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            top: 80%;
-            left: 20%;
-            animation-delay: 2s;
-        }
-
-        .shape:nth-child(4) {
-            width: 100px;
-            height: 100px;
-            top: 30%;
-            left: 70%;
-            animation-delay: 6s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(180deg); }
-        }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .logo {
-            font-size: 3.5em;
-            font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            letter-spacing: -2px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 1.3em;
-            font-weight: 500;
-        }
-
-        .admin-toggle {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .toggle-btn {
-            padding: 12px 30px;
-            border: 2px solid #667eea;
-            background: white;
-            color: #667eea;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .toggle-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 30px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 2em;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 22px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-            font-size: 0.95em;
-        }
-
-        .required {
-            color: #e74c3c;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 1em;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-            font-family: inherit;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 16px 40px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        .tickets-container {
-            max-height: 700px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .tickets-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .tickets-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .tickets-container::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 10px;
-        }
-
-        .ticket-card {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border-left: 6px solid #667eea;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .ticket-card:hover {
-            transform: translateX(8px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-
-        .ticket-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .ticket-id {
-            font-size: 1.3em;
-            font-weight: 800;
-            color: #667eea;
-        }
-
-        .status-badge {
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-size: 0.85em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .status-waiting {
-            background: linear-gradient(135deg, #ffd89b 0%, #ff9a9e 100%);
-            color: #fff;
-        }
-
-        .status-in-progress {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: #fff;
-        }
-
-        .status-completed {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            color: #fff;
-        }
-
-        .ticket-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin: 15px 0;
-        }
-
-        .info-item {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9em;
-        }
-
-        .info-label {
-            color: #888;
-            font-size: 0.85em;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-value {
-            color: #333;
-            font-weight: 600;
-        }
-
-        .ticket-description {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .admin-controls {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-        }
-
-        .status-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-size: 0.9em;
-        }
-
-        .btn-progress {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-
-        .btn-complete {
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-            color: white;
-        }
-
-        .status-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .priority-high {
-            border-left-color: #e74c3c;
-        }
-
-        .priority-medium {
-            border-left-color: #f39c12;
-        }
-
-        .priority-low {
-            border-left-color: #2ecc71;
-        }
-
-        .priority-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .priority-high-dot { background: #e74c3c; }
-        .priority-medium-dot { background: #f39c12; }
-        .priority-low-dot { background: #2ecc71; }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-        }
-
-        .empty-icon {
-            font-size: 5em;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .admin-panel {
-            display: none;
-        }
-
-        .admin-panel.active {
-            display: block;
-        }
-
-        .user-panel.hidden {
-            display: none;
-        }
-
-        .config-panel {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            border: 2px solid #667eea;
-        }
-
-        .config-input {
-            margin-bottom: 15px;
-        }
-
-        .config-input label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .config-input input {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-        }
-
-        @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: 800;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .success-message {
-            background: #43e97b;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        .error-message {
-            background: #e74c3c;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="floating-shapes">
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-        <div class="shape"></div>
-    </div>
-
-    <div class="container">
-        <div class="header">
-            <div class="logo">HALAGEL</div>
-            <div class="subtitle">Helpdesk Ticketing System</div>
-            <div class="admin-toggle">
-                <button class="toggle-btn active" onclick="showUserView()">👤 User Portal</button>
-                <button class="toggle-btn" onclick="showAdminView()">🔐 Admin Panel</button>
-                <button class="toggle-btn" onclick="showConfigView()">⚙️ Configuration</button>
-            </div>
-        </div>
-
-        <div id="successMessage" class="success-message"></div>
-        <div id="errorMessage" class="error-message"></div>
-
-        <!-- CONFIGURATION VIEW -->
-        <div id="configPanel" class="config-panel" style="display: none;">
-            <h2>⚙️ System Configuration</h2>
-            <div class="config-input">
-                <label>Google Apps Script URL:</label>
-                <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" style="font-family: monospace;">
-            </div>
-            <div class="config-input">
-                <label>Admin Password:</label>
-                <input type="password" id="adminPassword" placeholder="Enter admin password">
-            </div>
-            <button class="btn" onclick="saveConfig()">💾 Save Configuration</button>
-            <button class="btn" onclick="testConnection()" style="background: #f39c12; margin-top: 10px;">🔗 Test Connection</button>
-        </div>
-
-        <!-- USER VIEW -->
-        <div id="userPanel" class="user-panel">
-            <div class="main-content">
-                <div class="card">
-                    <h2>📝 Submit New Request</h2>
-                    <form id="ticketForm">
-                        <div class="form-group">
-                            <label>Email Address <span class="required">*</span></label>
-                            <input type="email" id="email" required placeholder="your.email@halagel.com">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Full Name <span class="required">*</span></label>
-                            <input type="text" id="fullName" required placeholder="John Doe">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Department <span class="required">*</span></label>
-                            <select id="department" required>
-                                <option value="">Select Department</option>
-                                <option value="HR">HR</option>
-                                <option value="Finance">Finance</option>
-                                <option value="Sales">Sales</option>
-                                <option value="Admin">Admin</option>
-                                <option value="Koop">Koop</option>
-                                <option value="Engineering">Engineering</option>
-                                <option value="Production">Production</option>
-                                <option value="SCM">SCM</option>
-                                <option value="R&D">R&D</option>
-                                <option value="Creative">Creative</option>
-                                <option value="QA/QC">QA/QC</option>
-                                <option value="Warehouse">Warehouse</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Type of Request <span class="required">*</span></label>
-                            <select id="requestType" required>
-                                <option value="">Select Request Type</option>
-                                <option value="Hardware Issue">🖥️ Hardware Issue</option>
-                                <option value="Software Issue">💾 Software Issue</option>
-                                <option value="Network Problem">🌐 Network Problem</option>
-                                <option value="Email Issue">📧 Email Issue</option>
-                                <option value="Access Request">🔑 Access Request</option>
-                                <option value="New Equipment">🆕 New Equipment</option>
-                                <option value="Password Reset">🔒 Password Reset</option>
-                                <option value="Printer Issue">🖨️ Printer Issue</option>
-                                <option value="Other">📋 Other</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Priority Level <span class="required">*</span></label>
-                            <select id="priority" required>
-                                <option value="">Select Priority</option>
-                                <option value="Low">🟢 Low - Can wait a few days</option>
-                                <option value="Medium">🟡 Medium - Within 24 hours</option>
-                                <option value="High">🔴 High - Urgent, work blocked</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Describe the Issue/Request <span class="required">*</span></label>
-                            <textarea id="description" required placeholder="Please provide detailed information about your issue..."></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Preferred Time for Assistance</label>
-                            <input type="datetime-local" id="preferredTime">
-                        </div>
-
-                        <button type="submit" class="btn">🚀 Submit Ticket</button>
-                    </form>
-                </div>
-
-                <div class="card">
-                    <h2>📊 Recent Tickets</h2>
-                    <div id="userTickets" class="tickets-container">
-                        <div class="empty-state">
-                            <div class="empty-icon">🎫</div>
-                            <p>No tickets yet. Submit your first request!</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ADMIN VIEW -->
-        <div id="adminPanel" class="admin-panel">
-            <div class="card">
-                <h2>📈 Dashboard Statistics</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="statWaiting">0</div>
-                        <div class="stat-label">Waiting</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="statProgress">0</div>
-                        <div class="stat-label">In Progress</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="statCompleted">0</div>
-                        <div class="stat-label">Completed</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2>🎫 All Tickets</h2>
-                <button class="btn" onclick="loadTickets()" style="margin-bottom: 20px; background: #10b981;">🔄 Refresh Tickets</button>
-                <div id="allTickets" class="tickets-container"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Configuration
-        let SCRIPT_URL = '';
-        let ADMIN_PASSWORD = 'admin123'; // Default password
-        let tickets = [];
-
-        // Initialize
-        function init() {
-            loadConfig();
-            checkAdminAccess();
-        }
-
-        // Configuration Management
-        function loadConfig() {
-            const savedUrl = localStorage.getItem('halagel_script_url');
-            const savedPassword = localStorage.getItem('halagel_admin_password');
-            
-            if (savedUrl) {
-                SCRIPT_URL = savedUrl;
-                document.getElementById('scriptUrl').value = savedUrl;
-            }
-            
-            if (savedPassword) {
-                ADMIN_PASSWORD = savedPassword;
-                document.getElementById('adminPassword').value = savedPassword;
-            }
-        }
-
-        function saveConfig() {
-            const scriptUrl = document.getElementById('scriptUrl').value;
-            const adminPassword = document.getElementById('adminPassword').value;
-
-            if (!scriptUrl) {
-                showError('Please enter your Google Apps Script URL');
-                return;
-            }
-
-            SCRIPT_URL = scriptUrl;
-            ADMIN_PASSWORD = adminPassword || 'admin123';
-
-            localStorage.setItem('halagel_script_url', SCRIPT_URL);
-            localStorage.setItem('halagel_admin_password', ADMIN_PASSWORD);
-
-            showSuccess('Configuration saved successfully!');
-        }
-
-        function testConnection() {
-            if (!SCRIPT_URL) {
-                showError('Please save configuration first');
-                return;
-            }
-
-            fetch(SCRIPT_URL)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showSuccess('✅ Connection successful! Google Sheets is working.');
-                    } else {
-                        showError('Connection failed. Please check your URL.');
-                    }
-                })
-                .catch(error => {
-                    showError('Connection failed: ' + error.message);
-                });
-        }
-
-        // Ticket Management
-        async function loadTickets() {
-            if (!SCRIPT_URL) {
-                showError('Please configure your Google Apps Script URL first');
-                return;
-            }
-
-            try {
-                const response = await fetch(SCRIPT_URL);
-                const data = await response.json();
-                
-                if (data.success) {
-                    tickets = data.tickets;
-                    renderUserTickets();
-                    renderAllTickets();
-                    updateStats();
-                    showSuccess('Tickets loaded successfully!');
-                } else {
-                    showError('Failed to load tickets');
-                }
-            } catch (error) {
-                showError('Error loading tickets: ' + error.message);
-            }
-        }
-
-        document.getElementById('ticketForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            if (!SCRIPT_URL) {
-                showError('System not configured. Please contact administrator.');
-                return;
-            }
-
-            const ticketData = {
-                action: 'create',
-                ticket: {
-                    title: `${document.getElementById('requestType').value} - ${document.getElementById('department').value}`,
-                    description: document.getElementById('description').value,
-                    email: document.getElementById('email').value,
-                    priority: document.getElementById('priority').value,
-                    status: 'Waiting',
-                    createdAt: new Date().toISOString(),
-                    fullName: document.getElementById('fullName').value,
-                    department: document.getElementById('department').value,
-                    requestType: document.getElementById('requestType').value,
-                    preferredTime: document.getElementById('preferredTime').value
-                }
-            };
-
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(ticketData)
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    this.reset();
-                    await loadTickets();
-                    showSuccess('✅ Ticket #' + result.id + ' submitted successfully! You will receive an email confirmation.');
-                } else {
-                    showError('Failed to submit ticket: ' + result.error);
-                }
-            } catch (error) {
-                showError('Error submitting ticket: ' + error.message);
-            }
+import React, { useState, useEffect } from 'react';
+import { Clock, CheckCircle, AlertCircle, Plus, X, Lock, LogOut, Settings } from 'lucide-react';
+
+const HelpdeskSystem = () => {
+  const [tickets, setTickets] = useState([]);
+  const [showNewTicket, setShowNewTicket] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loginPassword, setLoginPassword] = useState('');
+  const [adminPassword, setAdminPassword] = useState('admin123');
+  const [newPassword, setNewPassword] = useState('');
+  const [scriptUrl, setScriptUrl] = useState('https://script.google.com/macros/s/AKfycbzYh2spcQZWgMUE8HnQSY_H6m3c227R4E5lZ2KxhPEIWrqQRQ8m1nUavgQd82UGKcVv/exec');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: '', type: '' });
+  
+  const [newTicket, setNewTicket] = useState({
+    email: '',
+    fullName: '',
+    department: '',
+    requestType: '',
+    priority: '',
+    description: '',
+    preferredTime: ''
+  });
+
+  const departments = ['HR', 'Finance', 'Sales', 'Admin', 'Koop', 'Engineering', 'Production', 'SCM', 'R&D', 'Creative', 'QA/QC', 'Warehouse'];
+  
+  const requestTypes = [
+    { value: 'Hardware Issue', label: '🖥️ Hardware Issue' },
+    { value: 'Software Issue', label: '💾 Software Issue' },
+    { value: 'Network Problem', label: '🌐 Network Problem' },
+    { value: 'Email Issue', label: '📧 Email Issue' },
+    { value: 'Access Request', label: '🔑 Access Request' },
+    { value: 'New Equipment', label: '🆕 New Equipment' },
+    { value: 'Password Reset', label: '🔒 Password Reset' },
+    { value: 'Printer Issue', label: '🖨️ Printer Issue' },
+    { value: 'Other', label: '📋 Other' }
+  ];
+
+  useEffect(() => {
+    const savedPassword = localStorage.getItem('halagel-admin-password');
+    if (savedPassword) {
+      setAdminPassword(savedPassword);
+    }
+    
+    const savedAdminStatus = localStorage.getItem('halagel-admin-status');
+    if (savedAdminStatus === 'true') {
+      setIsAdmin(true);
+    }
+
+    loadTickets();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => loadTickets(), 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const showMessage = (text, type) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage({ text: '', type: '' }), 5000);
+  };
+
+  const loadTickets = async () => {
+    try {
+      const response = await fetch(scriptUrl + '?action=getTickets');
+      const data = await response.json();
+      
+      if (data.success) {
+        setTickets(data.tickets || []);
+      }
+    } catch (error) {
+      console.error('Error loading tickets:', error);
+    }
+  };
+
+  const handleLogin = () => {
+    if (loginPassword === adminPassword) {
+      setIsAdmin(true);
+      setShowLogin(false);
+      setLoginPassword('');
+      localStorage.setItem('halagel-admin-status', 'true');
+      showMessage('✓ Logged in successfully', 'success');
+    } else {
+      showMessage('Incorrect password!', 'error');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAdmin(false);
+    localStorage.removeItem('halagel-admin-status');
+    showMessage('Logged out', 'success');
+  };
+
+  const saveSettings = () => {
+    if (newPassword.length >= 6) {
+      setAdminPassword(newPassword);
+      localStorage.setItem('halagel-admin-password', newPassword);
+      setNewPassword('');
+      setShowSettings(false);
+      showMessage('Password changed successfully!', 'success');
+    } else {
+      showMessage('Password must be at least 6 characters', 'error');
+    }
+  };
+
+  const createTicket = async () => {
+    if (!newTicket.email || !newTicket.fullName || !newTicket.department || 
+        !newTicket.requestType || !newTicket.priority || !newTicket.description) {
+      showMessage('Please fill in all required fields', 'error');
+      return;
+    }
+
+    setLoading(true);
+
+    const ticketData = {
+      ...newTicket,
+      status: 'Waiting',
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      const formData = new FormData();
+      formData.append('action', 'create');
+      formData.append('data', JSON.stringify(ticketData));
+
+      const response = await fetch(scriptUrl, {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setNewTicket({
+          email: '',
+          fullName: '',
+          department: '',
+          requestType: '',
+          priority: '',
+          description: '',
+          preferredTime: ''
         });
+        setShowNewTicket(false);
+        showMessage('✅ Ticket submitted successfully!', 'success');
+        loadTickets();
+      } else {
+        showMessage('Failed to submit ticket: ' + (result.error || 'Unknown error'), 'error');
+      }
+    } catch (error) {
+      showMessage('Error submitting ticket. Please try again.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        async function updateStatus(ticketId, newStatus) {
-            if (!SCRIPT_URL) {
-                showError('System not configured');
-                return;
-            }
+  const updateStatus = async (ticketId, newStatus) => {
+    if (!isAdmin) {
+      showMessage('Only admin can update status!', 'error');
+      return;
+    }
 
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        action: 'update',
-                        id: ticketId,
-                        status: newStatus
-                    })
-                });
+    try {
+      const formData = new FormData();
+      formData.append('action', 'update');
+      formData.append('id', ticketId);
+      formData.append('status', newStatus);
 
-                const result = await response.json();
-                
-                if (result.success) {
-                    await loadTickets();
-                    showSuccess(`Ticket #${ticketId} updated to ${newStatus}`);
-                } else {
-                    showError('Failed to update ticket: ' + result.error);
-                }
-            } catch (error) {
-                showError('Error updating ticket: ' + error.message);
-            }
-        }
+      const response = await fetch(scriptUrl, {
+        method: 'POST',
+        body: formData
+      });
 
-        // Rendering functions (same as before)
-        function renderUserTickets() {
-            const container = document.getElementById('userTickets');
-            const userTickets = tickets.slice(0, 5);
-            
-            if (userTickets.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">🎫</div>
-                        <p>No tickets yet. Submit your first request!</p>
-                    </div>
-                `;
-                return;
-            }
+      const result = await response.json();
+      
+      if (result.success) {
+        showMessage('Ticket updated to ' + newStatus, 'success');
+        loadTickets();
+      } else {
+        showMessage('Failed to update ticket', 'error');
+      }
+    } catch (error) {
+      showMessage('Error updating ticket', 'error');
+    }
+  };
 
-            container.innerHTML = userTickets.map(renderTicket).join('');
-        }
+  const filterByStatus = (status) => {
+    return tickets.filter(ticket => ticket.status === status).length;
+  };
 
-        function renderAllTickets() {
-            const container = document.getElementById('allTickets');
-            
-            if (tickets.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📋</div>
-                        <p>No tickets in the system</p>
-                    </div>
-                `;
-                return;
-            }
+  const getPriorityColor = (priority) => {
+    if (priority === 'High') return 'border-l-red-500';
+    if (priority === 'Medium') return 'border-l-orange-500';
+    return 'border-l-green-500';
+  };
 
-            container.innerHTML = tickets.map(ticket => renderTicket(ticket, true)).join('');
-        }
+  const getStatusColor = (status) => {
+    if (status === 'Waiting') return 'bg-gradient-to-r from-yellow-400 to-orange-400';
+    if (status === 'In Progress') return 'bg-gradient-to-r from-blue-400 to-cyan-400';
+    return 'bg-gradient-to-r from-green-400 to-emerald-400';
+  };
 
-        function renderTicket(ticket, isAdmin = false) {
-            const statusClass = (ticket.Status || ticket.status).toLowerCase().replace(' ', '-');
-            const priorityClass = (ticket.Priority || ticket.priority).toLowerCase();
-            const date = new Date(ticket['Created At'] || ticket.createdAt).toLocaleString();
-            
-            return `
-                <div class="ticket-card priority-${priorityClass}">
-                    <div class="ticket-header">
-                        <span class="ticket-id">#${ticket.ID || ticket.id}</span>
-                        <span class="status-badge status-${statusClass}">${ticket.Status || ticket.status}</span>
-                    </div>
-                    
-                    <div class="ticket-info">
-                        <div class="info-item">
-                            <div class="info-label">Name</div>
-                            <div class="info-value">${ticket.fullName || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Email</div>
-                            <div class="info-value">${ticket.Email || ticket.email}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Department</div>
-                            <div class="info-value">${ticket.department || 'N/A'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Request Type</div>
-                            <div class="info-value">${ticket.requestType || (ticket.Title || ticket.title)}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Priority</div>
-                            <div class="info-value">
-                                <span class="priority-indicator priority-${priorityClass}-dot"></span>
-                                ${ticket.Priority || ticket.priority}
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            <div class="info-label">Submitted</div>
-                            <div class="info-value">${date}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="ticket-description">
-                        <strong>Description:</strong><br>
-                        ${ticket.Description || ticket.description}
-                    </div>
-                    
-                    ${isAdmin ? `
-                        <div class="admin-controls">
-                            ${(ticket.Status || ticket.status) === 'Waiting' ? `
-                                <button class="status-btn btn-progress" onclick="updateStatus(${ticket.ID || ticket.id}, 'In Progress')">
-                                    ▶️ Start Working
-                                </button>
-                            ` : ''}
-                            ${(ticket.Status || ticket.status) === 'In Progress' ? `
-                                <button class="status-btn btn-complete" onclick="updateStatus(${ticket.ID || ticket.id}, 'Completed')">
-                                    ✅ Mark Complete
-                                </button>
-                            ` : ''}
-                            ${(ticket.Status || ticket.status) === 'Completed' ? `
-                                <div style="color: #43e97b; font-weight: 700;">✓ Resolved</div>
-                            ` : ''}
-                        </div>
-                    ` : ''}
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-600 via-green-700 to-green-800 p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-8 mb-8 text-center border border-white/30">
+          <div className="flex justify-center items-center gap-6 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 140" className="h-20 w-auto">
+              <ellipse cx="160" cy="70" rx="150" ry="65" fill="#6b8e23"/>
+              <text x="50%" y="55%" textAnchor="middle" dominantBaseline="middle" fill="#fff" fontFamily="Arial" fontSize="45" fontWeight="bold">HALAGEL</text>
+              <circle cx="280" cy="35" r="18" fill="none" stroke="#fff" strokeWidth="3"/>
+              <text x="280" y="40" textAnchor="middle" dominantBaseline="middle" fill="#fff" fontFamily="Arial" fontSize="16" fontWeight="bold">R</text>
+            </svg>
+          </div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent mb-2">Helpdesk Ticketing System</h1>
+          <p className="text-gray-600 text-lg font-medium">IT Support Portal</p>
+          
+          {!isAdmin && (
+            <div className="mt-4 text-sm text-gray-600">
+              IT Admin? <button onClick={() => setShowLogin(true)} className="text-green-600 font-semibold hover:underline">Click here to login</button>
+            </div>
+          )}
+          
+          {isAdmin && (
+            <div className="mt-4 flex justify-center gap-3">
+              <button onClick={() => setShowSettings(true)} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition flex items-center gap-2">
+                <Settings className="w-4 h-4" /> Settings
+              </button>
+              <button onClick={handleLogout} className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2">
+                <LogOut className="w-4 h-4" /> Logout
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Messages */}
+        {message.text && (
+          <div className={`mb-4 p-4 rounded-xl text-white font-semibold ${message.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
+            {message.text}
+          </div>
+        )}
+
+        {/* Admin Badge */}
+        {isAdmin && (
+          <div className="mb-6 p-4 bg-green-100 border-2 border-green-500 rounded-xl text-green-800 font-bold text-center">
+            ✓ Logged in as Administrator
+          </div>
+        )}
+
+        {/* Stats (Admin Only) */}
+        {isAdmin && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="bg-gradient-to-br from-yellow-400 to-orange-400 text-white p-6 rounded-2xl shadow-xl">
+              <div className="text-5xl font-bold mb-2">{filterByStatus('Waiting')}</div>
+              <div className="text-lg font-semibold opacity-90">Waiting</div>
+            </div>
+            <div className="bg-gradient-to-br from-blue-400 to-cyan-400 text-white p-6 rounded-2xl shadow-xl">
+              <div className="text-5xl font-bold mb-2">{filterByStatus('In Progress')}</div>
+              <div className="text-lg font-semibold opacity-90">In Progress</div>
+            </div>
+            <div className="bg-gradient-to-br from-green-400 to-emerald-400 text-white p-6 rounded-2xl shadow-xl">
+              <div className="text-5xl font-bold mb-2">{filterByStatus('Completed')}</div>
+              <div className="text-lg font-semibold opacity-90">Completed</div>
+            </div>
+          </div>
+        )}
+
+        {/* Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Submit Form */}
+          <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-8 border border-white/30">
+            <h2 className="text-3xl font-bold text-green-700 mb-6">📝 Submit New Request</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address <span className="text-red-500">*</span></label>
+                <input
+                  type="email"
+                  value={newTicket.email}
+                  onChange={(e) => setNewTicket({...newTicket, email: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition"
+                  placeholder="your.email@halagel.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  value={newTicket.fullName}
+                  onChange={(e) => setNewTicket({...newTicket, fullName: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition"
+                  placeholder="John Doe"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Department <span className="text-red-500">*</span></label>
+                <select
+                  value={newTicket.department}
+                  onChange={(e) => setNewTicket({...newTicket, department: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition"
+                >
+                  <option value="">Select Department</option>
+                  {departments.map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Request Type <span className="text-red-500">*</span></label>
+                <select
+                  value={newTicket.requestType}
+                  onChange={(e) => setNewTicket({...newTicket, requestType: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition"
+                >
+                  <option value="">Select Request Type</option>
+                  {requestTypes.map(type => (
+                    <option key={type.value} value={type.value}>{type.label}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Priority <span className="text-red-500">*</span></label>
+                <select
+                  value={newTicket.priority}
+                  onChange={(e) => setNewTicket({...newTicket, priority: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition"
+                >
+                  <option value="">Select Priority</option>
+                  <option value="Low">🟢 Low - Can wait a few days</option>
+                  <option value="Medium">🟡 Medium - Within 24 hours</option>
+                  <option value="High">🔴 High - Urgent, work blocked</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Description <span className="text-red-500">*</span></label>
+                <textarea
+                  value={newTicket.description}
+                  onChange={(e) => setNewTicket({...newTicket, description: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition h-32 resize-none"
+                  placeholder="Please provide detailed information..."
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Preferred Time</label>
+                <input
+                  type="datetime-local"
+                  value={newTicket.preferredTime}
+                  onChange={(e) => setNewTicket({...newTicket, preferredTime: e.target.value})}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none transition"
+                />
+              </div>
+              
+              <button
+                onClick={createTicket}
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-4 rounded-xl font-bold text-lg hover:from-green-700 hover:to-green-800 transition shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? '⏳ Submitting...' : '🚀 Submit Ticket'}
+              </button>
+            </div>
+          </div>
+
+          {/* Tickets List */}
+          <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl p-8 border border-white/30">
+            <h2 className="text-3xl font-bold text-green-700 mb-6">
+              {isAdmin ? '🎫 All Tickets' : '📊 Recent Tickets'}
+            </h2>
+            <div className="space-y-4 max-h-[800px] overflow-y-auto pr-2">
+              {tickets.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <div className="text-6xl mb-4">🎫</div>
+                  <p className="text-lg">No tickets yet</p>
                 </div>
-            `;
-        }
+              ) : (
+                tickets.slice(0, isAdmin ? tickets.length : 5).map(ticket => (
+                  <div key={ticket.id} className={`bg-gray-50 p-6 rounded-2xl border-l-4 ${getPriorityColor(ticket.priority)} hover:shadow-lg transition`}>
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-xl font-bold text-green-700">#{ticket.id}</span>
+                      <span className={`px-4 py-2 rounded-full text-white text-sm font-bold ${getStatusColor(ticket.status)}`}>
+                        {ticket.status}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-white p-3 rounded-lg">
+                        <div className="text-xs text-gray-500 uppercase mb-1">Name</div>
+                        <div className="font-semibold text-gray-800">{ticket.fullName}</div>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg">
+                        <div className="text-xs text-gray-500 uppercase mb-1">Department</div>
+                        <div className="font-semibold text-gray-800">{ticket.department}</div>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg">
+                        <div className="text-xs text-gray-500 uppercase mb-1">Request</div>
+                        <div className="font-semibold text-gray-800">{ticket.requestType}</div>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg">
+                        <div className="text-xs text-gray-500 uppercase mb-1">Priority</div>
+                        <div className="font-semibold text-gray-800">{ticket.priority}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white p-3 rounded-lg mb-4">
+                      <div className="text-xs text-gray-500 uppercase mb-1">Description</div>
+                      <div className="text-gray-700">{ticket.description}</div>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500">
+                      Submitted: {new Date(ticket.createdAt).toLocaleString()}
+                    </div>
+                    
+                    {isAdmin && ticket.status !== 'Completed' && (
+                      <div className="mt-4 flex gap-2">
+                        {ticket.status === 'Waiting' && (
+                          <button
+                            onClick={() => updateStatus(ticket.id, 'In Progress')}
+                            className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-600 transition"
+                          >
+                            ▶️ Start Working
+                          </button>
+                        )}
+                        {ticket.status === 'In Progress' && (
+                          <button
+                            onClick={() => updateStatus(ticket.id, 'Completed')}
+                            className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white py-2 px-4 rounded-lg font-semibold hover:from-green-600 hover:to-emerald-600 transition"
+                          >
+                            ✅ Mark Complete
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
 
-        function updateStats() {
-            const waiting = tickets.filter(t => (t.Status || t.status) === 'Waiting').length;
-            const progress = tickets.filter(t => (t.Status || t.status) === 'In Progress').length;
-            const completed = tickets.filter(t => (t.Status || t.status) === 'Completed').length;
+        {/* Login Modal */}
+        {showLogin && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+              <button onClick={() => setShowLogin(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <X className="w-6 h-6" />
+              </button>
+              <div className="flex justify-center mb-6">
+                <Lock className="w-16 h-16 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-center mb-6">Admin Login</h2>
+              <input
+                type="password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none mb-2"
+                placeholder="Enter admin password"
+              />
+              <p className="text-xs text-gray-500 mb-4">Default: admin123</p>
+              <button onClick={handleLogin} className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition">
+                Login
+              </button>
+            </div>
+          </div>
+        )}
 
-            document.getElementById('statWaiting').textContent = waiting;
-            document.getElementById('statProgress').textContent = progress;
-            document.getElementById('statCompleted').textContent = completed;
-        }
+        {/* Settings Modal */}
+        {showSettings && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 relative">
+              <button onClick={() => setShowSettings(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <X className="w-6 h-6" />
+              </button>
+              <div className="flex justify-center mb-6">
+                <Settings className="w-16 h-16 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-center mb-6">Admin Settings</h2>
+              <div className="mb-4">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">New Password (min 6 chars)</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none"
+                  placeholder="Enter new password"
+                />
+              </div>
+              <button onClick={saveSettings} className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition">
+                Save Settings
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
-        // View Management
-        function showUserView() {
-            document.getElementById('userPanel').classList.remove('hidden');
-            document.getElementById('adminPanel').classList.remove('active');
-            document.getElementById('configPanel').style.display = 'none';
-            updateToggleButtons(0);
-        }
-
-        function showAdminView() {
-            if (!checkAdminAccess()) return;
-            
-            document.getElementById('userPanel').classList.add('hidden');
-            document.getElementById('adminPanel').classList.add('active');
-            document.getElementById('configPanel').style.display = 'none';
-            updateToggleButtons(1);
-            loadTickets();
-        }
-
-        function showConfigView() {
-            if (!checkAdminAccess()) return;
-            
-            document.getElementById('userPanel').classList.add('hidden');
-            document.getElementById('adminPanel').classList.remove('active');
-            document.getElementById('configPanel').style.display = 'block';
-            updateToggleButtons(2);
-        }
-
-        function updateToggleButtons(activeIndex) {
-            document.querySelectorAll('.toggle-btn').forEach((btn, index) => {
-                if (index === activeIndex) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-        }
-
-        function checkAdminAccess() {
-            const password = prompt('Enter Admin Password:');
-            if (password === ADMIN_PASSWORD) {
-                return true;
-            } else {
-                showError('Invalid admin password');
-                showUserView();
-                return false;
-            }
-        }
-
-        // Message functions
-        function showSuccess(message) {
-            const msg = document.getElementById('successMessage');
-            msg.textContent = message;
-            msg.style.display = 'block';
-            setTimeout(() => {
-                msg.style.display = 'none';
-            }, 5000);
-        }
-
-        function showError(message) {
-            const msg = document.getElementById('errorMessage');
-            msg.textContent = message;
-            msg.style.display = 'block';
-            setTimeout(() => {
-                msg.style.display = 'none';
-            }, 5000);
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
-</body>
-</html>
+export default HelpdeskSystem;
